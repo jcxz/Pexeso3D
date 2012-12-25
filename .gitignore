@@ -1,0 +1,19 @@
+# ignore Qt Creator's user file
+/pexeso.pro.user
+
+# Makefiles are generated for each platform by qmake, so ignore them
+/Makefile
+/Makefile.debug
+/Makefile.release
+
+# ignore visual studio debug database
+/*.pdb
+
+# ignore everything in obj directory and its subdirectories
+obj/**
+
+# ignore everything in logs
+logs/**
+
+# ignore compilation output in bin directory
+bin/pexeso.*
