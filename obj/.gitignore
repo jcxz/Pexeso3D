@@ -1,0 +1,7 @@
+# Note that this file is neccessary to be here
+# in order to have the obj directory tracked by git
+
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
