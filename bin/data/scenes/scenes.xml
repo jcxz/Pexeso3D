@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list ver="1">
+  <scene>
+    <name>A small scene</name>
+    <desc>Play a normal scene with 4 cubes</desc>
+    <path>data/scenes/scene/scene.xml</path>
+  </scene>
+  <scene>
+    <name>A big scene</name>
+    <desc>
+      Play a big scene with 3x3 cubes on each side.
+      And here i alter something ...
+    </desc>
+    <path>data/scenes/26/scene_26.xml</path>
+  </scene>
+  <scene>
+    <name>Merry Christmas!</name>
+    <desc>
+      We wish you a merry christmas! Unwrap your presents!
+    </desc>
+    <path>data/scenes/xmas/scene_xmas.xml</path>
+  </scene>
+  <scene>
+    <name>Bad scene</name>
+    <desc>
+     A big ugly scene that might break the game
+    </desc>
+    <path>data/scenes/bads/scene_bad1.xml</path>
+  </scene>
+</list>

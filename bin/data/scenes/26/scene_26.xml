@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene ver="1">
+  <wfcolor>4278190080</wfcolor>
+  <wfwidth>2.0</wfwidth>
+  <background>data/scenes/26/bg.jpg</background>
+  <cover>data/scenes/26/top.jpg</cover>
+  <textures>
+      <tex path="data/scenes/26/01.jpg" />
+      <tex path="data/scenes/26/02.jpg" />
+      <tex path="data/scenes/26/03.jpg" />
+      <tex path="data/scenes/26/04.jpg" />
+
+      <tex path="data/scenes/26/05.jpg" />
+      <tex path="data/scenes/26/06.jpg" />
+      <tex path="data/scenes/26/07.jpg" />
+      <tex path="data/scenes/26/08.jpg" />
+
+      <tex path="data/scenes/26/09.jpg" />
+      <tex path="data/scenes/26/10.jpg" />
+      <tex path="data/scenes/26/11.jpg" />
+      <tex path="data/scenes/26/12.jpg" />
+
+      <tex path="data/scenes/26/13.jpg" />
+  </textures> 
+  <cubes side="100">
+      <!-- front -->
+      <cube x="0" y="0" z="0" />
+      <cube x="0" y="1" z="0" />
+      <cube x="0" y="2" z="0" />
+
+      <cube x="1" y="0" z="0" />
+      <cube x="1" y="1" z="0" />
+      <cube x="1" y="2" z="0" />
+
+      <cube x="2" y="0" z="0" />
+      <cube x="2" y="1" z="0" />
+      <cube x="2" y="2" z="0" />
+
+      <!-- middle -->
+      <cube x="0" y="0" z="1" />
+      <cube x="0" y="1" z="1" />
+      <cube x="0" y="2" z="1" />
+
+      <cube x="1" y="0" z="1" />
+      <cube x="1" y="2" z="1" />
+
+      <cube x="2" y="0" z="1" />
+      <cube x="2" y="1" z="1" />
+      <cube x="2" y="2" z="1" />
+
+      <!-- back -->
+      <cube x="0" y="0" z="2" />
+      <cube x="0" y="1" z="2" />
+      <cube x="0" y="2" z="2" />
+
+      <cube x="1" y="0" z="2" />
+      <cube x="1" y="1" z="2" />
+      <cube x="1" y="2" z="2" />
+
+      <cube x="2" y="0" z="2" />
+      <cube x="2" y="1" z="2" />
+      <cube x="2" y="2" z="2" />
+
+  </cubes>
+</scene>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene ver="1">
+  <background>data/scenes/scene/bg.jpg</background>
+  <cover>data/scenes/scene/top.png</cover>
+  <textures>
+      <tex path="data/scenes/scene/a.png" />
+      <tex path="data/scenes/scene/b.png" />
+  </textures> 
+  <cubes side="100">
+      <cube x="0" y="0" z="0" />
+      <cube x="1" y="0" z="0" />
+      <cube x="0" y="1" z="0" />
+      <cube x="1" y="1" z="0" />
+  </cubes>
+</scene>
