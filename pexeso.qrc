@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>bin/gui/images/logo.png</file>
+        <file>bin/gui/images/aright.png</file>
+        <file>bin/gui/images/aright_pressed.png</file>
+        <file>bin/gui/images/aleft.png</file>
+        <file>bin/gui/images/aleft_pressed.png</file>
+    </qresource>
+</RCC>

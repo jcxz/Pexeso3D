@@ -35,3 +35,4 @@ So you can do:
 To compile and run from Qt Creator just double click the `pexeso.pro` file.
 In the project setup screen uncheck the shadow build directory option.
 To run the program you have to set your working directory to bin directory.
+                                                                            
