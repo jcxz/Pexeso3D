@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -74,7 +74,7 @@ void CGameOverWidget::showEvent(QShowEvent *event)
     case TYPE_VICTORY:
       m_caption->setText(tr("Victory"));
       m_message->setText(tr("Press continue to go back to main menu"));
-      m_edit_score->tr("Player 1");
+      //m_edit_score->setText(tr("Player 1"));
       m_edit_score->setVisible(false);
       break;
 
@@ -83,14 +83,14 @@ void CGameOverWidget::showEvent(QShowEvent *event)
       m_message->setText(tr("You won and reached the highest score. "
                             "Please type your name to enter "
                             "the hall of fame and hit continue"));
-      m_edit_score->tr("Player 1");
+      m_edit_score->setText(tr("Player 1"));
       m_edit_score->setVisible(true);
       break;
 
     case TYPE_DEFEAT:
       m_caption->setText(tr("Defeat"));
       m_message->setText(tr("Press continue to go back to main menu"));
-      m_edit_score->tr("Player 1");
+      //m_edit_score->setText(tr("Player 1"));
       m_edit_score->setVisible(false);
       break;
   }

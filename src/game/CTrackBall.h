@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * This file is part of Pexeso3D.
@@ -41,19 +41,11 @@
 class CTrackBall
 {
   public:
-    /* The type of trackball */
-    enum ETrackMode {
-      Plane = 0,
-      Sphere
-    };
-
-  public:
     /**
      * Constructor
      */
-    CTrackBall(ETrackMode mode = Sphere)
-      : m_mode(mode),
-        m_angle(0.0f),
+    CTrackBall(void)
+      : m_angle(0.0f),
         m_axis(QVector3D(0, 1, 0)),
         m_last_pos(0.0f, 0.0f),
         m_rotation()
@@ -63,9 +55,8 @@ class CTrackBall
     /**
      * Constructor
      */
-    CTrackBall(float angle, const QVector3D & axis, ETrackMode mode = Sphere)
-      : m_mode(mode),
-        m_angle(angle),
+    CTrackBall(float angle, const QVector3D & axis)
+      : m_angle(angle),
         m_axis(axis),
         m_last_pos(0.0f, 0.0f),
         m_rotation()
@@ -81,17 +72,28 @@ class CTrackBall
     }
 
     /**
+     * This method is used to record the initial position
+     * which will be used for calculations in move method
+     *
+     * @param p the inital point which must be in range [-1, 1] x [-1, 1]
+     */
+    void CTrackBall::push(const QPointF & p)
+    {
+      m_last_pos = p;
+      return;
+    }
+
+    /**
+     * coordinates have to be in [-1,1]x[-1,1] for easier math
+     */
+    void move(const QPointF & p, const QQuaternion & transformation);
+
+    /**
      * This method will reset the trackball position
      */
     void reset(void);
 
-    // coordinates have to be in [-1,1]x[-1,1] for easier math
-    void push(const QPointF & p, const QQuaternion & transformation);
-    void move(const QPointF & p, const QQuaternion & transformation);
-    void release(const QPointF & p, const QQuaternion & transformation);
-
   private:
-    ETrackMode m_mode;          /// trackball type
     float m_angle;
     QVector3D m_axis;
     QPointF m_last_pos;

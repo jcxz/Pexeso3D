@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -36,7 +36,7 @@
 #include "CBaseAiAgent.h"
 
 
-/** global variables private to this module */
+/* global variables private to this module */
 namespace {
   /* defines how many miliseconds should each frame take */
   const int g_frame_interval = 33;
@@ -86,14 +86,14 @@ CPexesoScene::CPexesoScene(QObject *parent)
 
   QLabel *p1_score = new QLabel(tr("Player\n0"));
   p1_score->setAlignment(Qt::AlignCenter);
-  p1_score->setAutoFillBackground(false);
-  //p1_score->setFixedSize(100, 100);
   p1_score->setObjectName("ingame_p1_score_lbl");
+  //p1_score->setFixedSize(100, 100);
+  //p1_score->setAutoFillBackground(false);
 
   QLabel *p2_score = new QLabel(tr("CPU\n0"));
   p2_score->setAlignment(Qt::AlignCenter);
-  //p2_score->setFixedSize(100, 100);
   p2_score->setObjectName("ingame_p2_score_lbl");
+  //p2_score->setFixedSize(100, 100);
 
   /* add gui widgets to the scene */
   m_pb_menu = addWidget(pb_menu);
@@ -431,7 +431,7 @@ void CPexesoScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
   //if (event->button() == Qt::RightButton)
   if (event->button() == Qt::LeftButton)
   {
-    m_track_ball.push(pixelPosToViewPos(event->scenePos()), QQuaternion());
+    m_track_ball.push(pixelPosToViewPos(event->scenePos()));
     event->accept();
   }
 
@@ -510,57 +510,7 @@ void CPexesoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     m_track_ball.move(pixelPosToViewPos(event->scenePos()), QQuaternion());
     event->accept();
   }
-  else
-  {
-    m_track_ball.release(pixelPosToViewPos(event->scenePos()), QQuaternion());
-    event->accept();
-  }
 
-  return;
-}
-
-
-/**
- */
-void CPexesoScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-  //qDebug() << PEXESO_FUNC;
-
-  /* let first  the QGraphicsScene handle the event */
-  QGraphicsScene::mouseReleaseEvent(event);
-  if (event->isAccepted())
-  {
-    //qDebug() << "Event accpeted by QGraphicsScene";
-    return;
-  }
-
-  /* check on proper initialization */
-  if (m_error != ERR_OK)
-  {
-    event->ignore();
-    qDebug() << PEXESO_FUNC
-             << "Not continuing because of the following error: "
-             << errorToString(m_error);
-    return;
-  }
-
-  /* check on the game state */
-  if (m_state != STATE_RUNNING)
-  {
-    event->ignore();
-    qDebug() << PEXESO_FUNC
-             << "game"
-             << ((m_state == STATE_STOPPED) ? "stopped" : "paused");
-    return;
-  }
-
-  //if (event->button() == Qt::RightButton)
-  if (event->button() == Qt::LeftButton)
-  {
-    m_track_ball.release(pixelPosToViewPos(event->scenePos()), QQuaternion());
-    event->accept();
-  }
-  
   return;
 }
 
@@ -615,7 +565,7 @@ void CPexesoScene::drawBackground(QPainter *painter, const QRectF & rect)
   painter->beginNativePainting();
 
   /* intialize and setup renderer */
-  if (!m_renderer.init(width(), height()))
+  if (!m_renderer.init(rect.width(), rect.height()))
   {
     qDebug() << "Failed to initialize renderer";
     m_error = ERR_RENDERER;
@@ -669,12 +619,12 @@ void CPexesoScene::drawBackground(QPainter *painter, const QRectF & rect)
   {
     if (m_tm->getP1Score() > m_tm->getP2Score())
     {
-      CGameOverWidget * game_over = static_cast<CGameOverWidget *>(m_game_over->widget());
+      CGameOverWidget *game_over = static_cast<CGameOverWidget *>(m_game_over->widget());
       game_over->setType(CGameOverWidget::TYPE_VICTORY);
     }
     else
     {
-      CGameOverWidget * game_over = static_cast<CGameOverWidget *>(m_game_over->widget());
+      CGameOverWidget *game_over = static_cast<CGameOverWidget *>(m_game_over->widget());
       game_over->setType(CGameOverWidget::TYPE_DEFEAT);
     }
     m_renderer.dimScreen();
@@ -683,7 +633,7 @@ void CPexesoScene::drawBackground(QPainter *painter, const QRectF & rect)
   else
   {
     CGameMenuWidget *menu = static_cast<CGameMenuWidget *>(m_menu->widget());
-    CGameOverWidget * game_over = static_cast<CGameOverWidget *>(m_game_over->widget());
+    CGameOverWidget *game_over = static_cast<CGameOverWidget *>(m_game_over->widget());
     menu->setVisible(false);
     game_over->setVisible(false);
   }

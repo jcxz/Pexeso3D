@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -79,7 +79,7 @@ class CSelectionBox : public CStyledWidget
 
     /**
      * This method will get the index of currently selected
-     * option. An index of -1 menas that no option is selected.
+     * option. An index of -1 means that no option is selected.
      */
     int getCurrentOptionIndex(void) const
     {

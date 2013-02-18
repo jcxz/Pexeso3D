@@ -1,6 +1,6 @@
 ################################################################################
 #                                                                              #
-# Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>                #
+# Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>           #
 #                                                                              #
 # This file is part of Pexeso3D.                                               #
 #                                                                              #
@@ -87,7 +87,9 @@ HEADERS += \
   src/gui/CMainMenuWidget.h \
   src/gui/CSinglePlayerMenuWidget.h \
   src/gui/CMultiPlayerMenuWidget.h \
-  src/Global.h
+  src/Global.h \
+    src/game/CFileManager.h \
+    src/game/CGameStats.h
 
 # Source files
 SOURCES += \
@@ -117,7 +119,9 @@ SOURCES += \
   src/gui/CMainMenuWidget.cpp \
   src/gui/CSinglePlayerMenuWidget.cpp \
   src/gui/CMultiPlayerMenuWidget.cpp \
-  src/main.cpp
+  src/main.cpp \
+    src/game/CFileManager.cpp \
+    src/game/CGameStats.cpp
 
 # Resource files
 RESOURCES += \

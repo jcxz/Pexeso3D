@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -18,7 +18,7 @@
  */
 
 /**
- * Implementation an axis aligned bounding box
+ * Implementation of an axis aligned bounding box
  */
 
 #include <float.h>
@@ -26,33 +26,18 @@
 #include "CBBox.h"
 
 
-/**
- */
-Maths::SVector3D CBBox::getCenter(void) const
-{
-  /*
-  return Maths::SVector3D((m_pos2.x - m_pos1.x) / 2.0f,
-                          (m_pos2.y - m_pos1.y) / 2.0f,
-                          (m_pos2.z - m_pos1.z) / 2.0f);
-  */
-
-  return Maths::SVector3D((m_pos2.x + m_pos1.x) / 2.0f,
-                          (m_pos2.y + m_pos1.y) / 2.0f,
-                          (m_pos2.z + m_pos1.z) / 2.0f);
-}
-
 
 /**
  */
 void CBBox::reset(void)
 {
-  m_pos1.x = 0.0f;
-  m_pos1.y = 0.0f;
-  m_pos1.z = 0.0f;
+  m_min.x = 0.0f;
+  m_min.y = 0.0f;
+  m_min.z = 0.0f;
 
-  m_pos2.x = 0.0f;
-  m_pos2.y = 0.0f;
-  m_pos2.z = 0.0f;
+  m_max.x = 0.0f;
+  m_max.y = 0.0f;
+  m_max.z = 0.0f;
 
   return;
 }
@@ -63,35 +48,35 @@ void CBBox::reset(void)
 void CBBox::adjust(const CBBox & bbox)
 {
   /* check on left bottom front corner */
-  if (m_pos1.x > bbox.m_pos1.x)
+  if (m_min.x > bbox.m_min.x)
   {
-    m_pos1.x = bbox.m_pos1.x;
+    m_min.x = bbox.m_min.x;
   }
 
-  if (m_pos1.y > bbox.m_pos1.y)
+  if (m_min.y > bbox.m_min.y)
   {
-    m_pos1.y = bbox.m_pos1.y;
+    m_min.y = bbox.m_min.y;
   }
 
-  if (m_pos1.z > bbox.m_pos1.z)
+  if (m_min.z > bbox.m_min.z)
   {
-    m_pos1.z = bbox.m_pos1.z;
+    m_min.z = bbox.m_min.z;
   }
 
   /* check on right top back corner */
-  if (m_pos2.x < bbox.m_pos2.x)
+  if (m_max.x < bbox.m_max.x)
   {
-    m_pos2.x = bbox.m_pos2.x;
+    m_max.x = bbox.m_max.x;
   }
 
-  if (m_pos2.y < bbox.m_pos2.y)
+  if (m_max.y < bbox.m_max.y)
   {
-    m_pos2.y = bbox.m_pos2.y;
+    m_max.y = bbox.m_max.y;
   }
 
-  if (m_pos2.z < bbox.m_pos2.z)
+  if (m_max.z < bbox.m_max.z)
   {
-    m_pos2.z = bbox.m_pos2.z;
+    m_max.z = bbox.m_max.z;
   }
 
   return;
@@ -103,50 +88,38 @@ void CBBox::adjust(const CBBox & bbox)
 void CBBox::adjust(const Maths::SVector3D & pt)
 {
   /* minimum point */
-  if (m_pos1.x > pt.x)
+  if (m_min.x > pt.x)
   {
-    m_pos1.x = pt.x;
+    m_min.x = pt.x;
   }
 
-  if (m_pos1.y > pt.y)
+  if (m_min.y > pt.y)
   {
-    m_pos1.y = pt.y;
+    m_min.y = pt.y;
   }
 
-  if (m_pos1.z > pt.z)
+  if (m_min.z > pt.z)
   {
-    m_pos1.z = pt.z;
+    m_min.z = pt.z;
   }
 
   /* maximum point */
-  if (m_pos2.x < pt.x)
+  if (m_max.x < pt.x)
   {
-    m_pos2.x = pt.x;
+    m_max.x = pt.x;
   }
 
-  if (m_pos2.y < pt.y)
+  if (m_max.y < pt.y)
   {
-    m_pos2.y = pt.y;
+    m_max.y = pt.y;
   }
 
-  if (m_pos2.z < pt.z)
+  if (m_max.z < pt.z)
   {
-    m_pos2.z = pt.z;
+    m_max.z = pt.z;
   }
 
   return;
-}
-
-
-static Maths::SVector3D mul(double *mw, Maths::SVector3D vec)
-{
-  Maths::SVector3D res;
-
-  res.x = mw[0] * vec.x + mw[4] * vec.y + mw[8] * vec.z;
-  res.y = mw[1] * vec.x + mw[5] * vec.y + mw[9] * vec.z;
-  res.z = mw[2] * vec.x + mw[6] * vec.y + mw[10] * vec.z;
-
-  return res;
 }
 
 
@@ -195,11 +168,11 @@ bool CBBox::intersects(const Maths::SVector3D & origin,
   float t1,t2;
   float tnear,tfar;
 
-  qDebug() << "pos1:   " << m_pos1 << ", pos2: " << m_pos2;
+  qDebug() << "pos1:   " << m_min << ", pos2: " << m_max;
 
   if (dir.x == 0)
   {
-    if (origin.x < m_pos1.x || origin.x > m_pos2.x)
+    if (origin.x < m_min.x || origin.x > m_max.x)
     {
       return false;
     }
@@ -211,8 +184,8 @@ bool CBBox::intersects(const Maths::SVector3D & origin,
   }
   else
   {
-    t1 = (m_pos1.x - origin.x) / dir.x;
-    t2 = (m_pos2.x - origin.x) / dir.x;
+    t1 = (m_min.x - origin.x) / dir.x;
+    t2 = (m_max.x - origin.x) / dir.x;
 
     if (dir.x < 0)
     {
@@ -231,14 +204,14 @@ bool CBBox::intersects(const Maths::SVector3D & origin,
     }
   }
 
-  if (dir.y == 0 && (origin.y < m_pos1.y || origin.y > m_pos2.y))
+  if (dir.y == 0 && (origin.y < m_min.y || origin.y > m_max.y))
   {
     return false;
   }
   else
   {
-    t1 = (m_pos1.y - origin.y) / dir.y;
-    t2 = (m_pos2.y - origin.y) / dir.y;
+    t1 = (m_min.y - origin.y) / dir.y;
+    t2 = (m_max.y - origin.y) / dir.y;
 
     if (dir.y < 0)
     {
@@ -257,14 +230,14 @@ bool CBBox::intersects(const Maths::SVector3D & origin,
     }
   }
 
-  if (dir.z == 0 && (origin.z < m_pos1.z || origin.z > m_pos2.z))
+  if (dir.z == 0 && (origin.z < m_min.z || origin.z > m_max.z))
   {
     return false;
   }
   else
   {
-    t1 = (m_pos1.z - origin.z) / dir.z;
-    t2 = (m_pos2.z - origin.z) / dir.z;
+    t1 = (m_min.z - origin.z) / dir.z;
+    t2 = (m_max.z - origin.z) / dir.z;
 
     if (dir.z < 0)
     {
@@ -401,6 +374,6 @@ bool CBBox::intersects(const Maths::SVector3D & origin,
  */
 QDebug & operator<<(QDebug & debug, const CBBox & bbox)
 {
-  debug.nospace() << "CBBox(" << bbox.m_pos1 << ", " << bbox.m_pos2 << ")";
+  debug.nospace() << "CBBox(" << bbox.m_min << ", " << bbox.m_max << ")";
   return debug.maybeSpace();
 }

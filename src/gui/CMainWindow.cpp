@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -56,7 +56,7 @@ CMainWindow::CMainWindow(QGLWidget *glwidget, QWidget *parent)
   m_multi_player = new CMultiPlayerMenuWidget;
   /*
      according to dumentation it is possible to associate a single scene with multiple views,
-     thus QGraphicsView will not an ownership over scene and we must do it manually.
+     thus QGraphicsView will not take an ownership over scene and we must do it manually.
      Also this SO post confirms this:
      http://stackoverflow.com/questions/4955743/does-a-qgraphicsview-take-ownership-over-its-associated-graphics-scene
   */
@@ -148,7 +148,8 @@ void CMainWindow::handleGameLoadTrans(void)
    */
   m_glwidget->makeCurrent();
 
-  if (!m_pexeso_scene->newGame(m_single_player->getSelectedScene()))
+  if (!m_pexeso_scene->newGame(m_single_player->getSelectedScene(),
+                               m_single_player->getSelectedDifficulty()))
   {
     qDebug() << "error loading game from from scene file:"
              << m_single_player->getSelectedScene();

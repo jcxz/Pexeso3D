@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -33,19 +33,19 @@
  * This class represents an axis aligned bounding box
  * (which means that the box is not rotated in any way
  * about origin)
- * i.e a minimal box that can still fit in the model
+ * i.e a minimal box that can still fit in the model (or the scene)
  */
 class CBBox
 {
   public:
     CBBox(void)
-      : m_pos1(0.0f, 0.0f, 0.0f),
-        m_pos2(0.0f, 0.0f, 0.0f)
+      : m_min(0.0f, 0.0f, 0.0f),
+        m_max(0.0f, 0.0f, 0.0f)
     { }
 
     CBBox(const Maths::SVector3D & pos, float side)
-      : m_pos1(pos),
-        m_pos2(pos.x + side, pos.y + side, pos.z + side)
+      : m_min(pos),
+        m_max(pos.x + side, pos.y + side, pos.z + side)
     { }
 
     /**
@@ -53,7 +53,7 @@ class CBBox
      */
     const Maths::SVector3D & getMin(void) const
     {
-      return m_pos1;
+      return m_min;
     }
 
     /**
@@ -61,7 +61,7 @@ class CBBox
      */
     const Maths::SVector3D & getMax(void) const
     {
-      return m_pos2;
+      return m_max;
     }
 
     /**
@@ -69,7 +69,12 @@ class CBBox
      *
      * @return a positon in the center of nounding box
      */
-    Maths::SVector3D getCenter(void) const;
+    Maths::SVector3D CBBox::getCenter(void) const
+    {
+      return Maths::SVector3D((m_max.x + m_min.x) / 2.0f,
+                              (m_max.y + m_min.y) / 2.0f,
+                              (m_max.z + m_min.z) / 2.0f);
+    }
 
     /**
      * Tato funkcia bude konvertovat axis-aligned bounding box
@@ -121,8 +126,8 @@ class CBBox
     friend QDebug & operator<<(QDebug & debug, const CBBox & bbox);
 
   private:
-    Maths::SVector3D m_pos1;  /// left bottom back corner of bbox
-    Maths::SVector3D m_pos2;  /// right top front corner of bbox
+    Maths::SVector3D m_min;  /// left bottom back corner of bbox
+    Maths::SVector3D m_max;  /// right top front corner of bbox
 };
 
 #endif

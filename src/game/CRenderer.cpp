@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -29,42 +29,32 @@
 #include "CScene.h"
 #include "CTrackBall.h"
 
-//#define PEXESO_PROJ_ORTHO  // use orthogonal projection
 
 
 /* initialize class constants */
-const QColor CRenderer::DEF_SELECTION_COLOR = QColor(0x4A, 0xB9, 0xED); //0x00FFFF00;
+const QColor CRenderer::DEF_SELECTION_COLOR = QColor(0x4A, 0xB9, 0xED);
+
 
 /* private global variables */
 namespace {
 
-#ifdef PEXESO_PROJ_ORTHO
-const double g_near_plane = -1000.0f;
-const double g_far_plane = 1000.0f;
-const double g_near_far_dist = g_near_plane - g_far_plane;
-#else
-//const double g_near_plane = 10.0f;//0.01f;    //-10000.0f;
-//const double g_far_plane = 10000.0f; //-1000.0f; //10000.0f;
-const double g_near_plane = 0.01f;    //-10000.0f;
-const double g_far_plane = 20000.0f; //10000.0f;
+const double g_near_plane = 0.01f;
+const double g_far_plane = 20000.0f;
 const double g_near_far_dist = g_far_plane - g_near_plane;
 const double g_persp_angle = 45.0f;    // angle in perspective projection
-#endif
 
 }  // End of private namespace
 
 
 
-
 /**
  */
-bool CRenderer::init(int w, int h, EProjection proj)
+bool CRenderer::init(int w, int h)
 {
   //qDebug() << PEXESO_FUNC;
 
   m_w = w;
   m_h = h;
-  m_proj = proj;
 
   glGetError();
 
@@ -78,14 +68,7 @@ bool CRenderer::init(int w, int h, EProjection proj)
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  if (m_proj == ORTHOGRAPHIC)
-  {
-    glOrtho(0.0f, m_w, m_h, 0.0f, g_near_plane, g_far_plane);
-  }
-  else
-  {
-    gluPerspective(g_persp_angle, (((float) m_w) / ((float) m_h)), g_near_plane, g_far_plane);
-  }
+  gluPerspective(g_persp_angle, (((float) m_w) / ((float) m_h)), g_near_plane, g_far_plane);
 
   /* reset back to model-view matrix */
   glMatrixMode(GL_MODELVIEW);
@@ -196,14 +179,7 @@ void CRenderer::resize(int w, int h)
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  if (m_proj == ORTHOGRAPHIC)
-  {
-    glOrtho(0.0f, m_w, m_h, 0.0f, g_near_plane, g_far_plane);
-  }
-  else
-  {
-    gluPerspective(g_persp_angle, (((float) m_w) / ((float) m_h)), g_near_plane, g_far_plane);
-  }
+  gluPerspective(g_persp_angle, (((float) m_w) / ((float) m_h)), g_near_plane, g_far_plane);
 
   glMatrixMode(GL_MODELVIEW);
   //glLoadIdentity(); // ???
@@ -303,7 +279,7 @@ void CRenderer::renderScene(const CScene & scene)
   //glPolygonOffset(0.5f, 0.5f);
   glPolygonOffset(1.0f, 1.0f);
 
-  /* if the trackball is set rotate the scene according to trackball */
+  /* if the trackball is set, rotate the scene according to trackball */
   if (m_track_ball)
   {
     QMatrix4x4 m;
@@ -394,7 +370,7 @@ void CRenderer::renderScene(const CScene & scene)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       }
       else
-      { // however the uncovered models we still render as normal
+      { // however the uncovered models are still rendered as normal
         int tex_ind = (*model_it)->getTextureIndex();
         tex_store.bindTexture(tex_ind);       
         glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
@@ -443,7 +419,7 @@ void CRenderer::dimScreen(void)
 {
   qDebug() << PEXESO_FUNC;
 
-  /* switch projection for background rendering */
+  /* switch projection for dimming the screen */
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
@@ -547,70 +523,6 @@ void CRenderer::renderStencilBuffer(void)
   glMatrixMode(GL_PROJECTION);
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
-
-  return;
-}
-
-
-/**
- */
-void CRenderer::renderPickRay(int x, int y)
-{
-  PEXESO_UNUSED(x);
-  PEXESO_UNUSED(y);
-
-#if 0
-#if 0
-  CCamera camera;
-  SVector3D origin;
-  SVector3D dir;
-
-  camera.buildCameraRay(m_last_click_pos.x(), m_last_click_pos.y(), &origin, &dir);
-
-  qDebug() << "drawing pick ray: " << origin << dir;
-
-  glColor3f(1.0f, 1.0f, 1.0f);
-  glBegin(GL_LINES);
-  glVertex3f(dir.x, dir.y, dir.z);
-  glVertex3f(origin.x, origin.y, origin.z);
-  //glVertex3f(origin.x, origin.y, origin.z);
-  //glVertex3f(dir.x, dir.y, dir.z);
-  glEnd();
-  glColor3f(1.0, 1.0, 1.0);
-#else
-  CCamera camera;
-  SVector3D origin;
-  SVector3D dir;
-  SVector3D pos;
-
-  camera.buildCameraRay(m_last_click_pos.x(), m_last_click_pos.y(), &origin, &dir);
-  pos = camera.unproject(m_last_click_pos.x(), m_last_click_pos.y());
-
-  glColor3f(1.0f, 1.0f, 1.0f);
-  glDisable(GL_DEPTH_TEST);
-
-  glBegin(GL_LINES);
-  glVertex3f(origin.x, origin.y, origin.z);
-  glVertex3f(pos.x, pos.y, pos.z);
-  glColor3f(1.0f, 0.0f, 1.0f);
-  glVertex3f(pos.x, pos.y, pos.z);
-  glVertex3f(origin.x, origin.y, -origin.z);
-
-  glColor3f(0.0f, 1.0f, 1.0f);
-  glVertex3f(origin.x, origin.y, origin.z);
-  glVertex3f(origin.x + 100000 * dir.x, origin.y + 100000 * dir.y, origin.z + 100000 * dir.z);
-
-  qDebug() << "x: " << origin.x + 100000 * dir.x
-           << ", y: " << origin.y + 100000 * dir.y
-           << ", z: " << origin.z + 100000 * dir.z;
-  //SVector3D c = m_scene.getBBox().getCenter();
-  //glVertex3f(c.x, c.y, c.z);
-  glEnd();
-
-  glEnable(GL_DEPTH_TEST);
-  glColor3f(1.0, 1.0, 1.0);
-#endif
-#endif
 
   return;
 }

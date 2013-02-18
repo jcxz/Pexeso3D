@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
  *
  * This file is part of Pexeso3D.
@@ -54,76 +54,37 @@ void CTrackBall::reset(void)
 
 /**
  */
-void CTrackBall::push(const QPointF & p, const QQuaternion & )
-{
-  //m_rotation = getRotation();
-  m_last_pos = p;
-  //m_angle = 0.0f;
-
-  return;
-}
-
-
-/**
- */
 void CTrackBall::move(const QPointF & p, const QQuaternion & transformation)
 {
-  switch (m_mode)
+  QVector3D last_pos_3D = QVector3D(m_last_pos.x(), m_last_pos.y(), 0.0f);
+  float sqr_z = 1 - QVector3D::dotProduct(last_pos_3D, last_pos_3D);
+  if (sqr_z > 0)
   {
-    case Plane:
-      {
-        QLineF delta(m_last_pos, p);
-        m_angle = 180 * delta.length() / PI;
-        m_axis = QVector3D(-delta.dy(), delta.dx(), 0.0f).normalized();
-        m_axis = transformation.rotatedVector(m_axis);
-        m_rotation = QQuaternion::fromAxisAndAngle(m_axis, 180 / PI * delta.length()) * m_rotation;
-      }
-      break;
-
-    case Sphere:
-      {
-        QVector3D lastPos3D = QVector3D(m_last_pos.x(), m_last_pos.y(), 0.0f);
-        float sqrZ = 1 - QVector3D::dotProduct(lastPos3D, lastPos3D);
-        if (sqrZ > 0)
-        {
-          lastPos3D.setZ(sqrt(sqrZ));
-        }
-        else
-        {
-          lastPos3D.normalize();
-        }
-
-        QVector3D currentPos3D = QVector3D(p.x(), p.y(), 0.0f);
-        sqrZ = 1 - QVector3D::dotProduct(currentPos3D, currentPos3D);
-        if (sqrZ > 0)
-        {
-          currentPos3D.setZ(sqrt(sqrZ));
-        }
-        else
-        {
-          currentPos3D.normalize();
-        }
-
-        m_axis = QVector3D::crossProduct(lastPos3D, currentPos3D);
-        m_angle = 180 / PI * asin(sqrt(QVector3D::dotProduct(m_axis, m_axis)));
-        m_axis.normalize();
-        m_axis = transformation.rotatedVector(m_axis);
-        m_rotation = QQuaternion::fromAxisAndAngle(m_axis, m_angle) * m_rotation;
-      }
-      break;
+    last_pos_3D.setZ(sqrt(sqr_z));
+  }
+  else
+  {
+    last_pos_3D.normalize();
   }
 
+  QVector3D current_pos_3D = QVector3D(p.x(), p.y(), 0.0f);
+  sqr_z = 1 - QVector3D::dotProduct(current_pos_3D, current_pos_3D);
+  if (sqr_z > 0)
+  {
+    current_pos_3D.setZ(sqrt(sqr_z));
+  }
+  else
+  {
+    current_pos_3D.normalize();
+  }
+
+  m_axis = QVector3D::crossProduct(last_pos_3D, current_pos_3D);
+  m_angle = 180 / PI * asin(sqrt(QVector3D::dotProduct(m_axis, m_axis)));
+  m_axis.normalize();
+  m_axis = transformation.rotatedVector(m_axis);
+  m_rotation = QQuaternion::fromAxisAndAngle(m_axis, m_angle) * m_rotation;
+
   m_last_pos = p;
-
-  return;
-}
-
-
-/**
- */
-void CTrackBall::release(const QPointF & p, const QQuaternion &transformation)
-{
-  //move(p, transformation);
 
   return;
 }

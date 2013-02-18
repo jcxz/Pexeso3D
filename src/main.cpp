@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -79,9 +79,9 @@ int main(int argc, char *argv[])
   /* initialize OpenGL and extensions */
   if ((QGLFormat::openGLVersionFlags() & QGLFormat::OpenGL_Version_1_5) == 0)
   {
-    QMessageBox::critical(0, g_app_name, QString("OpenGL version 1.5 or higher is "
-                                                 "required to run this demo.\n"
-                                                 "The program will now exit."));
+    QMessageBox::critical(0, g_app_name, QObject::tr("OpenGL version 1.5 or higher is "
+                                                     "required to run this demo.\n"
+                                                     "The program will now exit."));
     return 1;
   }
 
@@ -93,8 +93,8 @@ int main(int argc, char *argv[])
   glwidget->makeCurrent();
   if (!OpenGL::SExtensions::instance.initExtensions(glwidget->context()))
   {
-    QMessageBox::critical(0, g_app_name, QString("Some of the required OpenGL "
-                                                 "extensions were not resolved"));
+    QMessageBox::critical(0, g_app_name, QObject::tr("Some of the required OpenGL "
+                                                     "extensions were not resolved"));
     return 1;
   }
 
@@ -107,8 +107,8 @@ int main(int argc, char *argv[])
 
     if (!file.open(QIODevice::ReadOnly))
     {
-      QMessageBox::warning(0, g_app_name, QString("Failed to load stylesheet file.\n"
-                                                  "Falling back to default style."));
+      QMessageBox::warning(0, g_app_name, QObject::tr("Failed to load stylesheet file.\n"
+                                                      "Falling back to default style."));
     }
 
     QString style(file.readAll());

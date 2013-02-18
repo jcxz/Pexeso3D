@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -28,6 +28,7 @@
 
 #include "CStyledWidget.h"
 #include "CSceneBrowser.h"
+#include "CPexesoScene.h"
 
 
 class QPushButton;
@@ -41,15 +42,27 @@ class CSinglePlayerMenuWidget : public CStyledWidget
   Q_OBJECT
 
   public:
+    /**
+     * Constructor
+     */
     explicit CSinglePlayerMenuWidget(QWidget *parent = 0);
 
     /**
      * This method will return the scene settings
+     *
+     * @return the current scene name
      */
     QString getSelectedScene(void) const
     {
       return m_browser->getSelectedScene();
     }
+
+    /**
+     * This method will return the currently selected difficulty level
+     *
+     * @return the current difficulty level
+     */
+    CPexesoScene::EDifficulty getSelectedDifficulty(void) const;
 
   public slots:
     /**

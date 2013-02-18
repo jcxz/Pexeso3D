@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -81,7 +81,7 @@ class CSceneBrowser : public CStyledWidget
     }
 
     /**
-     * This method wil return a path to the selected scene,
+     * This method will return a path to the selected scene,
      * so that it can be loaded.
      *
      * @return a path to the selected scene file, so that it can be loaded

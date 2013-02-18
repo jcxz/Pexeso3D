@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Josef Rudolf <xrudol04@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Josef Rudolf <xrudol04@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -38,15 +38,6 @@ class CScene;
 class CRenderer
 {
   public:
-    /**
-     * This is an enumeration of projections,
-     * that can be set with this renderer
-     */
-    enum EProjection {
-      PERSPECTIVE = 0,          /// use perspective projection
-      ORTHOGRAPHIC              /// use ortographic projection
-    };
-
     /** this enumeration defines how the scene will be rendered */
     enum ERenderMode {
       RM_NORMAL = 0,            /// render models covered or uncovred based on their state
@@ -62,7 +53,6 @@ class CRenderer
   public:
     explicit CRenderer(ERenderMode mode = RM_NORMAL)
       : m_mode(mode),
-        m_proj(PERSPECTIVE),
         m_w(0),
         m_h(0),
         m_track_ball(0),
@@ -148,7 +138,7 @@ class CRenderer
      *
      * @param return true on success, false otherwise
      */
-    bool init(int w, int h, EProjection proj = PERSPECTIVE);
+    bool init(int w, int h);
 
     /**
      * Reset all the state changed by renderer
@@ -190,11 +180,6 @@ class CRenderer
     void renderStencilBuffer(void);
 
     /**
-     * This method will draw a pick ray from origin to unprojected point
-     */
-    void renderPickRay(int x, int y);
-
-    /**
      * This function will return a string representation of the mode constant
      */
     static const char *modeToStr(ERenderMode mode);
@@ -206,7 +191,6 @@ class CRenderer
 
   private:
     ERenderMode m_mode;        /// the current rendering mode
-    EProjection m_proj;        /// projection type used
     int m_w;                   /// viewport width
     int m_h;                   /// viewport height
     CTrackBall *m_track_ball;  /// this class holds view transformations

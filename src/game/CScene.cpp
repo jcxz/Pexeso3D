@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
- *                    Josef Rudolf <xrudol04@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ *                         Josef Rudolf <xrudol04@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -63,7 +63,8 @@ CBaseModel *CScene::calcIntersection(int x, int y) const
 
   /* run through all the objects */
   for (CConstModelIter it = m_models.begin(); it != m_models.end(); ++it)
-  {
+  { // maybe optimize out the test on m_models.end()
+    // the index should allways be found
     if ((*it)->getID() == index)
     {
       return *it;
@@ -149,7 +150,7 @@ CBaseModel *CScene::calcIntersection(int x, int y) const
 
 
 /**
-*/
+ */
 void CScene::clear(void)
 {
   /* free all models */
@@ -172,7 +173,7 @@ void CScene::clear(void)
 
 
 /**
-*/
+ */
 bool CScene::loadFromXML(const QString & filename)
 {
   QFile file(filename);
@@ -199,7 +200,7 @@ bool CScene::loadFromXML(const QString & filename)
   }
 
   /* make sure that the number of models is twice the number of textures,
-    excluding the cover texture */
+     excluding the cover texture */
   if (((m_tex_store.getSize() - 2) * 2) != m_models.size())
   {
     qDebug() << "The number of models (" << m_models.size()
@@ -246,7 +247,7 @@ bool CScene::loadFromXML(const QString & filename)
 
 
 /**
-*/
+ */
 CScene::EErrorCode CScene::loadContents(QXmlStreamReader & reader)
 {
   /* check on the document start */
@@ -317,7 +318,7 @@ CScene::EErrorCode CScene::loadContents(QXmlStreamReader & reader)
 
 
 /**
-*/
+ */
 CScene::EErrorCode CScene::loadMetaData(QXmlStreamReader & reader)
 {
 #if 0
@@ -423,7 +424,7 @@ CScene::EErrorCode CScene::loadMetaData(QXmlStreamReader & reader)
 
 
 /**
-*/
+ */
 CScene::EErrorCode CScene::loadTextures(QXmlStreamReader & reader)
 {
   /* process textures tag */
@@ -470,7 +471,7 @@ CScene::EErrorCode CScene::loadTextures(QXmlStreamReader & reader)
 
 
 /**
-*/
+ */
 CScene::EErrorCode CScene::loadModels(QXmlStreamReader & reader)
 {
   /* process cubes tag */
@@ -553,7 +554,7 @@ CScene::EErrorCode CScene::loadModels(QXmlStreamReader & reader)
 
 
 /**
-*/
+ */
 bool CScene::saveToXML(const QString & filename)
 {
   PEXESO_UNUSED(filename);
@@ -562,7 +563,7 @@ bool CScene::saveToXML(const QString & filename)
 
 
 /**
-*/
+ */
 void CScene::shuffleTextures(void)
 {
   PEXESO_ASSERT(m_models.size() == ((m_tex_store.getSize() - 2) * 2));
@@ -598,7 +599,7 @@ void CScene::shuffleTextures(void)
 
 
 /**
-*/
+ */
 CScene::EErrorCode CScene::loadSceneList(const QString & path, QVector<SSceneInfo> *list, bool simplify)
 {
   PEXESO_ASSERT(list != NULL);
@@ -639,7 +640,7 @@ CScene::EErrorCode CScene::loadSceneList(const QString & path, QVector<SSceneInf
 
 
 /**
-*/
+ */
 CScene::EErrorCode CScene::loadSceneListContents(QXmlStreamReader & reader, QVector<SSceneInfo> *list)
 {
   /* check on the document start */
@@ -696,7 +697,7 @@ CScene::EErrorCode CScene::loadSceneListContents(QXmlStreamReader & reader, QVec
 
 
 /**
-*/
+ */
 CScene::EErrorCode CScene::loadSceneListData(QXmlStreamReader & reader, QVector<SSceneInfo> *list)
 {
   SSceneInfo info;
@@ -768,7 +769,7 @@ CScene::EErrorCode CScene::loadSceneListData(QXmlStreamReader & reader, QVector<
 
 
 /**
-*/
+ */
 const char *CScene::errorToString(EErrorCode err)
 {
   static const char *err_strings[] = {
@@ -832,7 +833,7 @@ const char *CScene::errorToString(EErrorCode err)
 
 
 /**
-*/
+ */
 QDebug operator<<(QDebug debug, const CScene & scene)
 {
   debug.nospace() //<< "scene name    : " << scene.m_name                << "\n"

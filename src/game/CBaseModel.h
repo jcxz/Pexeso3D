@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -35,7 +35,7 @@
 class QDebug;
 
 /**
- * This class represents an abstract base for all in game models
+ * This class represents a base class for all in game models
  */
 class CBaseModel
 {

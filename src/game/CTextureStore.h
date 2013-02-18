@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -31,7 +31,7 @@
 
 
 /**
- * This class represetns a contained for
+ * This class represetns a container for
  * OpenGL texture id-s
  */
 class CTextureStore

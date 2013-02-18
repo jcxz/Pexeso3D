@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -90,4 +90,25 @@ CSinglePlayerMenuWidget::CSinglePlayerMenuWidget(QWidget *parent)
   l_main->addLayout(l_start_back);
 
   setLayout(l_main);
+}
+
+
+/**
+ */
+CPexesoScene::EDifficulty CSinglePlayerMenuWidget::getSelectedDifficulty(void) const
+{
+  if (m_difficulty->getCurrentOption() == tr("Easy"))
+  {
+    return CPexesoScene::EASY;
+  }
+  else if (m_difficulty->getCurrentOption() == tr("Medium"))
+  {
+    return CPexesoScene::MEDIUM;
+  }
+  else if (m_difficulty->getCurrentOption() == tr("Hard"))
+  {
+    return CPexesoScene::HARD;
+  }
+
+  return CPexesoScene::MEDIUM;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -75,10 +75,16 @@ class CPexesoScene : public QGraphicsScene
      * so you can youse OpenGL function since declaring it
      */
     explicit CPexesoScene(QObject *parent = 0);
+
+    /**
+     * Destructor
+     */
     ~CPexesoScene(void);
 
     /**
-     * This method will return atextual description of an error in game
+     * This method will return a textual description of an error in game
+     *
+     * @retrun a string with error message
      */
     QString getErrorString(void) const
     {
@@ -124,21 +130,24 @@ class CPexesoScene : public QGraphicsScene
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
 
     virtual void drawBackground(QPainter *painter, const QRectF & rect);
 
     /**
-     * This event handler takes take of redrawing the
+     * This event handler takes care of redrawing the
      * screen and updating the game logic and ai
      */
     virtual void timerEvent(QTimerEvent *event);
 
   private:
     /**
-     * This method will covner a pixel from screen to range
+     * This method will convert a pixel from screen to range
      * [-1,1]x[-1,1] required by trackball
+     *
+     * @param p a point on the screen
+     *
+     * @return a point in suitable for passing to CTrackBall
      */
     inline QPointF pixelPosToViewPos(const QPointF & p)
     {
@@ -182,7 +191,7 @@ class CPexesoScene : public QGraphicsScene
     QGraphicsProxyWidget *m_p1_score;   /// a widget to display first player's score
     QGraphicsProxyWidget *m_p2_score;   /// a widget to display second' player's score
 
-    /**
+    /*
      * This is used so that CPexesoView has an acces to findOptimalDistanceFromCamera()
      * function. This function has to be called before anything si shown on the screen
      * otherwise it creates some undesired visual artifacts.

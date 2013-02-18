@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -35,7 +35,7 @@ void CStyledWidget::paintEvent(QPaintEvent *event)
   PEXESO_UNUSED(event);
 
   /*
-   * this code was inspired by qt's docuentation.
+   * this code was inspired by qt's documentation.
    * see: http://developer.qt.nokia.com/doc/qt-4.8/stylesheet-reference.html
    */
 

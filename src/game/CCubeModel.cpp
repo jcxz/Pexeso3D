@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
+ * Copyright (C) 2012-2013 Matus Fedorko <xfedor01@stud.fit.vutbr.cz>
  *
  * This file is part of Pexeso3D.
  *
@@ -107,39 +107,6 @@ bool CCubeModel::build(const Maths::SVector3D & pos, GLfloat side)
     Maths::SVector2D(1.0f, 0.0f),
     Maths::SVector2D(0.0f, 0.0f),
     Maths::SVector2D(0.0f, 1.0f)
-
-#if 0
-    /// this is fucked up coords to draw only one side
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f),
-    SVector2D(1.1f, 1.1f)
-  #endif
   };
 
   /* indexes for the cube vertices */
