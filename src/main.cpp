@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
   }
 
   /* use sample buffers to get antialiasing ??? */
-  QGLWidget *glwidget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
-  //QGLWidget *glwidget = new QGLWidget();
+  //QGLWidget *glwidget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
+  QGLWidget *glwidget = new QGLWidget();
   //QGLWidget *glwidget = new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::NoStencilBuffer));
 
   glwidget->makeCurrent();

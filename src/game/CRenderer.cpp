@@ -343,13 +343,17 @@ void CRenderer::renderScene(const CScene & scene)
       if ((*model_it)->isCovered())
       {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#ifdef Q_OS_WIN
+        // this did not do very well in experiments on Linux, so rather disable it there
         glEnable(GL_POLYGON_OFFSET_LINE);
         //glPolygonOffset(0.25f, 0.25);
-
+#endif
         glDrawElements(GL_QUADS, ib.getLength(), ib.getType(), NULL);
 
+#ifdef Q_OS_WIN
         //glPolygonOffset(0.5f, 0.5f);
         glDisable(GL_POLYGON_OFFSET_LINE);
+#endif
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       }
       else
