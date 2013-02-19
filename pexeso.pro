@@ -85,9 +85,9 @@ HEADERS += \
   src/gui/CMainMenuWidget.h \
   src/gui/CSinglePlayerMenuWidget.h \
   src/gui/CMultiPlayerMenuWidget.h \
-  src/Global.h \
-    src/game/CFileManager.h \
-    src/game/CGameStats.h
+  src/Global.h
+#    src/game/CFileManager.h \
+#    src/game/CGameStats.h
 
 # Source files
 SOURCES += \
@@ -115,9 +115,9 @@ SOURCES += \
   src/gui/CMainMenuWidget.cpp \
   src/gui/CSinglePlayerMenuWidget.cpp \
   src/gui/CMultiPlayerMenuWidget.cpp \
-  src/main.cpp \
-    src/game/CFileManager.cpp \
-    src/game/CGameStats.cpp
+  src/main.cpp
+#    src/game/CFileManager.cpp \
+#    src/game/CGameStats.cpp
 
 # Resource files
 RESOURCES += \

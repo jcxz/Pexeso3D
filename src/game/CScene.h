@@ -121,8 +121,8 @@ class CScene
       : m_error(ERR_OK),
         m_cover_tex_ind(CTextureStore::INVALID_INDEX),
         m_background_tex_ind(CTextureStore::INVALID_INDEX),
-        m_wf_color(DEF_WF_COLOR),
         m_wf_line_width(DEF_WF_LINE_WIDTH),
+        m_wf_color(DEF_WF_COLOR),
         m_bbox(),
         m_tex_store(),
         m_models()
@@ -172,7 +172,7 @@ class CScene
     /**
      * This function will return the width of the wireframe lines
      */
-    const float getWFLineWidth(void) const
+    float getWFLineWidth(void) const
     {
       return m_wf_line_width;
     }

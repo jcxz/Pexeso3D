@@ -77,7 +77,7 @@ class CTrackBall
      *
      * @param p the inital point which must be in range [-1, 1] x [-1, 1]
      */
-    void CTrackBall::push(const QPointF & p)
+    void push(const QPointF & p)
     {
       m_last_pos = p;
       return;

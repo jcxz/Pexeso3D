@@ -93,7 +93,7 @@ class CBBox
      *
      * @return a positon in the center of nounding box
      */
-    Maths::SVector3D CBBox::getCenter(void) const
+    Maths::SVector3D getCenter(void) const
     {
       return Maths::SVector3D((m_max.x + m_min.x) / 2.0f,
                               (m_max.y + m_min.y) / 2.0f,
