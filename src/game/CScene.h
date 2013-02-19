@@ -253,10 +253,20 @@ class CScene
     }
 
     /**
-     * This function returns a pointer to the model that was selected
+     * This method returns a pointer to the model that was selected
+     *
+     * @param x the x coordinate of the screen
+     * @param y the y coordinate of the screen
+     *
+     * @return a pointer to the model that was selected or
+     *         NULL if no model was selected
      */
-    // TODO: tuna by bolo mozno lepsie ak by sa predavala referencia na CCamera
     CBaseModel *calcIntersection(int x, int y) const;
+
+    /**
+     * This method will randomly assign textures to models
+     */
+    void shuffleTextures(void);  // toto dat mozno ako private
 
     /**
      * This function will clear the contents of the scene and reset it
@@ -273,11 +283,6 @@ class CScene
      * This method will save the scene to an XML file
      */
     bool saveToXML(const QString & filename);
-
-    /**
-     * This method will randomly assign textures to models
-     */
-    void shuffleTextures(void);  // toot dat mozno ako private
 
     /**
      * This method will load a list of available scene's
@@ -307,6 +312,7 @@ class CScene
      */
     friend QDebug operator<<(QDebug debug, const CScene & scene);
 
+
   private:
     /**
      * Functions to load the Scene XML file contents
@@ -317,7 +323,7 @@ class CScene
     EErrorCode loadModels(QXmlStreamReader & reader);
 
     /**
-     * Functions to read the XML scene list file contenst
+     * Functions to read the XML scene list file contents
      */
     static EErrorCode loadSceneListContents(QXmlStreamReader & reader, QVector<SSceneInfo> *list);
     static EErrorCode loadSceneListData(QXmlStreamReader & reader, QVector<SSceneInfo> *list);

@@ -169,6 +169,7 @@ class CPexesoScene : public QGraphicsScene
      */
     static const char *errorToString(EError error);
 
+
   private:
     /* game stuff */
     EState m_state;                     /// determines the current game state

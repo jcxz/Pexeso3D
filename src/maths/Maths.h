@@ -65,13 +65,14 @@ struct SVertex
 };
 
 
+#if 0
 /**
  * This structure represents a 4x4 transformation matrix
  */
 struct SMatrix4D
 {
   /* union {
-    struct {  // this is prohibited by ISO C++98   // ???
+    struct {  // this is prohibited by ISO C++98
       float d11, d21, d31, d41;
       float d12, d22, d32, d42;
       float d13, d23, d33, d43;
@@ -92,6 +93,7 @@ struct SMatrix4D
   friend SMatrix4D operator*(const SMatrix4D & lhs, const SMatrix4D & rhs);
   friend SMatrix4D operator*(const SVector3D & lhs, const SMatrix4D & rhs);
 };
+#endif
 
 } // End of namespace Maths
 

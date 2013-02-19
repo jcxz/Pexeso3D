@@ -51,54 +51,35 @@ const double g_persp_angle = 45.0f;    // angle in perspective projection
  */
 bool CRenderer::init(int w, int h)
 {
-  //qDebug() << PEXESO_FUNC;
-
   m_w = w;
   m_h = h;
 
+  /* reset OpenGL errors */
   glGetError();
 
   /* set up viewport area */
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-  glClearDepth(1.0f);
-  glClearStencil(0);
   glViewport(0, 0, m_w, m_h);
 
   /* set up projection */
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-
   gluPerspective(g_persp_angle, (((float) m_w) / ((float) m_h)), g_near_plane, g_far_plane);
 
   /* reset back to model-view matrix */
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  /* do other saettings */
-  glEnable(GL_MULTISAMPLE);  // antialiasing (enable it in case it was disabled by someone else) ???
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
-  //glCullFace(GL_BACK);  // cull back facing facets, this should even be the default mode
-
-  //glEnable(GL_STENCIL_TEST);   // enable stenciling, this is used for object selection
-  //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+  /* do other settings */
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClearDepth(1.0f);
+  glClearStencil(0);
+  glEnable(GL_MULTISAMPLE);  // antialiasing (enable it in case it was disabled by someone else)
+  glEnable(GL_DEPTH_TEST);   // enable depth testing
+  glEnable(GL_CULL_FACE);    // enable face culling
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   //glDepthFunc(GL_LEQUAL);
-  //glBlendFunc(GL_ONE, GL_ONE);
-  //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_COLOR);
 
-  //glEnable(GL_BLEND);
-  //glDisable(GL_BLEND);
-
-  /* this command will cause that a variable offset
-     will be added to each rendered polygon's depth value
-     Without this setting outlines of polygons would
-     screw z-value (depth) and would not look nice, i.e
-     they could become dashed or have other kinds of artifacts on them */
-  //glPolygonOffset(1.0, 1.0);
-  //glPolygonOffset(1.0, 0.0);
-  //glLineWidth(4.0f);
   glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
   glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
@@ -126,14 +107,10 @@ bool CRenderer::init(int w, int h)
  */
 bool CRenderer::deinit(void)
 {
+  /* reset OpenGL errors */
   glGetError();
 
-  /* set up viewport area */
-  //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);  // this should already be the initial value
-  //glClearDepth(1.0f);  // the intial value should be 1.0f
-  //glClearStencil(0);   // the intial value should be 0
-
-    /*reset the projection back to orthographic */
+  /*reset the projection back to orthographic */
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(0.0f, m_w, m_h, 0.0f, 0.0f, 1.0f);
@@ -143,16 +120,13 @@ bool CRenderer::deinit(void)
   glLoadIdentity();
 
   /* do other saettings */
-  //glEnable(GL_MULTISAMPLE);  // the intial value should be enabled in this case
   glDisable(GL_DEPTH_TEST);   // depth testing is initially disabled
   glDisable(GL_CULL_FACE);    // face culling is initially disabled
-  //glCullFace(GL_BACK);      // GL_BACK is the default
 
   glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
   glStencilFunc(GL_ALWAYS, 0, 0xFF);
   glBlendFunc(GL_ONE, GL_ZERO);
   glDepthFunc(GL_LESS);
-  //glPolygonOffset(0.0, 0.0);   // intial values are 0.0 for both parameters
   glLineWidth(1.0f);           // the intial value is 1
 
   /* check on OpenGL errors */
@@ -182,7 +156,7 @@ void CRenderer::resize(int w, int h)
   gluPerspective(g_persp_angle, (((float) m_w) / ((float) m_h)), g_near_plane, g_far_plane);
 
   glMatrixMode(GL_MODELVIEW);
-  //glLoadIdentity(); // ???
+  //glLoadIdentity();
 
   return;
 }
@@ -214,8 +188,6 @@ void CRenderer::renderBackground(const CScene & scene)
   /* render background */
   tex_store.bindTexture(background_tex_ind);
 
-  //glColor3f(1.0f, 1.0f, 0.0f);
-
   glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 1.0f); glVertex2f(-1.0f, -1.0f);
     glTexCoord2f(1.0f, 1.0f); glVertex2f( 1.0f, -1.0f);
@@ -243,8 +215,6 @@ void CRenderer::renderBackground(const CScene & scene)
  */
 void CRenderer::renderScene(const CScene & scene)
 {
-  //qDebug() << PEXESO_FUNC;
-
   /* check if rendering is enabled */
   if (m_mode == RM_NULL)
   {
@@ -257,11 +227,11 @@ void CRenderer::renderScene(const CScene & scene)
   const CTextureStore & tex_store = scene.getTextures();  // a container with textures
   int cover_tex_ind = scene.getCoverTextureIndex();       // index of cover texture
   GLfloat inc_c = 1.0f / scene.getModelCount();           // how much different will next model's color be
-  GLfloat cur_c = 0.0f;                                   // currently used color (in color mode)
   GLfloat col_r = 1.0f;                                   // normal red color component
   GLfloat col_g = 1.0f;                                   // normal green color component
   GLfloat col_b = 1.0f;                                   // normal blue color component
   GLfloat col_a = 0.0f;                                   // normal alpha color component
+  unsigned int col = 0;                                   // a color used in color mode
 
   /* set the color to be used for wireframe rendering */
   if (m_mode == RM_WIRED)
@@ -276,7 +246,13 @@ void CRenderer::renderScene(const CScene & scene)
   glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);  // when the stencil test passes write to stencil buffer
   glColor4f(col_r, col_g, col_b, col_a);      // set the rendering color
   glLineWidth(scene.getWFLineWidth());        // set the wireframe line width
-  //glPolygonOffset(0.5f, 0.5f);
+
+  /* this command will cause that an offset will be
+     added to each rendered polygon's depth value.
+     Without this setting outlines of polygons would
+     mess up z-value (depth) and would not look nice,
+     i.e they could become dashed or have other kinds
+     of artifacts on them */
   glPolygonOffset(1.0f, 1.0f);
 
   /* if the trackball is set, rotate the scene according to trackball */
@@ -288,8 +264,10 @@ void CRenderer::renderScene(const CScene & scene)
   }
 
   /* move the scene to the center of the view */
-  Maths::SVector3D scene_center = scene.getBBox().getCenter();
-  glTranslatef(-scene_center.x, -scene_center.y, -scene_center.z);
+  {
+    Maths::SVector3D scene_center = scene.getBBox().getCenter();
+    glTranslatef(-scene_center.x, -scene_center.y, -scene_center.z);
+  }
 
   /*
    * enable stenciling - this is used for mouse selection tests
@@ -299,7 +277,6 @@ void CRenderer::renderScene(const CScene & scene)
   glEnable(GL_STENCIL_TEST);
   glEnable(GL_POLYGON_SMOOTH);
   glEnable(GL_LINE_SMOOTH);
-  glEnable(GL_MULTISAMPLE);
 
   /* render models */
   while (model_it != model_it_end)
@@ -351,8 +328,14 @@ void CRenderer::renderScene(const CScene & scene)
     }
     else if (m_mode == RM_COLORED)
     { // draw models with a given color
-      cur_c += inc_c;
-      glColor3f(cur_c, cur_c, cur_c);
+      col++;
+      glColor3f(col & 1, col & 2, col & 4);
+      glDrawElements(GL_QUADS, ib.getLength(), ib.getType(), NULL);
+    }
+    else if (m_mode == RM_GREYED)
+    {
+      col_r -= inc_c;
+      glColor3f(col_r, col_r, col_r);
       glDrawElements(GL_QUADS, ib.getLength(), ib.getType(), NULL);
     }
     else if (m_mode == RM_WIRED)
@@ -402,7 +385,6 @@ void CRenderer::renderScene(const CScene & scene)
     ++model_it;
   }
 
-  glDisable(GL_MULTISAMPLE);
   glDisable(GL_LINE_SMOOTH);
   glDisable(GL_POLYGON_SMOOTH);
   glDisable(GL_STENCIL_TEST);
@@ -417,8 +399,6 @@ void CRenderer::renderScene(const CScene & scene)
  */
 void CRenderer::dimScreen(void)
 {
-  qDebug() << PEXESO_FUNC;
-
   /* switch projection for dimming the screen */
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
@@ -461,19 +441,17 @@ void CRenderer::dimScreen(void)
 void CRenderer::renderXYZAxes(void) const
 {
   glBegin(GL_LINES);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(-100.0f, 0.0f, 0.0f);
+    glVertex3f(1000.0f, 0.0f, 0.0f);
 
-  glColor3f(1.0f, 0.0f, 0.0f);
-  glVertex3f(-100.0f, 0.0f, 0.0f);
-  glVertex3f(1000.0f, 0.0f, 0.0f);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(0.0f, -100.0f, 0.0f);
+    glVertex3f(0.0f, 1000.0f, 0.0f);
 
-  glColor3f(0.0f, 0.0f, 1.0f);
-  glVertex3f(0.0f, -100.0f, 0.0f);
-  glVertex3f(0.0f, 1000.0f, 0.0f);
-
-  glColor3f(0.0f, 1.0f, 0.0f);
-  glVertex3f(0.0f, 0.0f, -100.0f);
-  glVertex3f(0.0f, 0.0f, 1000.0f);
-
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(0.0f, 0.0f, -100.0f);
+    glVertex3f(0.0f, 0.0f, 1000.0f);
   glEnd();
 
   glColor3f(1.0, 1.0, 1.0);
@@ -486,8 +464,6 @@ void CRenderer::renderXYZAxes(void) const
  */
 void CRenderer::renderStencilBuffer(void)
 {
-  //qDebug() << PEXESO_FUNC;
-
   /* switch projection for background rendering */
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
@@ -534,7 +510,6 @@ const char *CRenderer::modeToStr(ERenderMode mode)
 {
   static const char *strings[] = {
     "RM_NORMAL",
-    //"RM_COVERED",
     "RM_UNCOVERED",
     "RM_COLORED",
     "RM_WIRED",
@@ -555,8 +530,10 @@ const char *CRenderer::modeToStr(ERenderMode mode)
 QDebug operator<<(QDebug debug, const CRenderer & renderer)
 {
   debug.nospace() << "mode            : " << CRenderer::modeToStr(renderer.m_mode) << "\n"
+                  << "viewport width  : " << renderer.m_w << "\n"
+                  << "viewport height : " << renderer.m_h << "\n"
                   //<< "TrackBall       : " << (*renderer.m_track_ball)   << "\n"
                   << "selection color : " << renderer.m_sel_color       << "\n";
 
-  return debug.space();
+  return debug.maybeSpace();
 }

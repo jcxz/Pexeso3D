@@ -25,13 +25,13 @@
 #include <QDebug>
 #include <QXmlStreamReader>
 #include <QFile>
-#include <float.h>
+#include <ctime>
+#include <cstdlib>
 
 #include "Global.h"
 #include "CScene.h"
 #include "CCubeModel.h"
-#include "CCamera.h"
-#include "COBBox.h"
+
 
 
 /* initialize constants */
@@ -44,20 +44,20 @@ const float CScene::DEF_WF_LINE_WIDTH = 4.0f;                  // use 4.0f as de
  */
 CBaseModel *CScene::calcIntersection(int x, int y) const
 {
-  GLint viewport[4];             // viewport (i.e windows size)
-  glGetIntegerv(GL_VIEWPORT, viewport);
+  GLint viewport[4];  // viewport (i.e window size)
+  GLint index = 0;    // index on position [x, y]
 
   /* read out the stencil value */
-  GLint index = 0;
-
+  glGetIntegerv(GL_VIEWPORT, viewport);
   glReadPixels(x, viewport[3] - y, 1, 1, GL_STENCIL_INDEX, GL_INT, &index);
 
   qDebug() << "x == " << x << "y == " << y;
   qDebug() << viewport[0] << viewport[1] << viewport[2] << viewport[3];
   qDebug() << "index == " << index;
 
+  /* index 0 is background */
   if (index == 0)
-  { // index 0 is background
+  {
     return NULL;
   }
 
@@ -72,80 +72,47 @@ CBaseModel *CScene::calcIntersection(int x, int y) const
   }
 
   return NULL;
+}
 
-#if 0
-  qDebug() << ">>>>>>>>>>" << MG3D_FUNC << "<<<<<<<<<<<<<";
 
-  CCamera camera;
-  SVector3D origin;
-  SVector3D dir;
-
-  /* build a ray from the point of click to camera */
-  camera.buildCameraRay(x, y, &origin, &dir);
-
-  CBaseModel *model = NULL;          // a model that was intersected
-  GLfloat dist = (GLfloat) FLT_MAX;  // the distance of model closet to camera
-
-  qDebug() << "origin : " << origin;
-  qDebug() << "dir    : " << dir;
-
-  /* loop through all the models in scene and detect their intersection */
-  for (CConstModelIter it = m_models.begin(); it != m_models.end(); ++it)
+/**
+ */
+void CScene::shuffleTextures(void)
+{
+  /* check on preconditions */
+  if (m_tex_store.getSize() < 3)
   {
-#if 0
-    CBBox bbox((*it)->getBBox());
-    //COBBox bbox = (*it)->getBBox().getOBBox(world_transform);
-    float tmin = 0.0f;
-    float tmax = 0.0f;
-
-    if (bbox.intersects(origin, dir, &tmin, &tmax))
-    {
-      SVector3D closest = origin + dir * (bbox.m_Center - origin).dot(dir);
-      GLfloat tmp_dist = (closest - bbox.m_Center).getLengthSquared();
-
-      if (tmp_dist < dist)
-      {
-        dist = tmp_dist;
-        model = (*it);
-      }
-    }
-#endif
-#if 1
-    const CBBox & bbox = (*it)->getBBox();
-    float tmin = 0.0f;
-    float tmax = 0.0f;
-
-    if (bbox.intersects(origin, dir, &tmin, &tmax))
-    {
-      qDebug() << "got:" << bbox;
-
-      /* compute distance from bbox centre and
-        compare it with distance of object currenly closest to camera */
-      if (((tmin + tmax) / 2.0f) < dist)
-      {
-        dist = (tmin + tmax) / 2.0f;
-        model = (*it);
-      }
-#if 0
-      SVector3D tmp(bbox.getCenter());
-      tmp -= origin;
-      //tmp.normalize();
-
-      GLfloat tmp_dist = tmp.getLength();
-      if (tmp_dist < dist)
-      {
-        dist = tmp_dist;
-        model = (*it);
-      }
-#endif
-    }
-#endif
+    qWarning() << PEXESO_FUNC
+               << ": There must be at least a background and cover texture and one puzzle";
+    return;
   }
 
-  qDebug() << ">>>>>>>>>>" << MG3D_FUNC << "<<<<<<<<<<<<<";
+  if (m_models.size() != ((m_tex_store.getSize() - 2) * 2))
+  {
+    qWarning() << PEXESO_FUNC
+               << ": The number of models must equal double the number of textures";
+    return;
+  }
 
-  return model;
-#endif
+  /* initialize random number generator */
+  srand(time(NULL));
+
+  /* shuffle the textures */
+  for (int i = m_models.size() - 1; i >= 0; --i)
+  {
+    /* pick a random index from range <0, i> */
+    int index = (double(rand()) / double(RAND_MAX)) * i;
+
+    /* assign the texture index to a model */
+    m_models[index]->setTextureIndex((i % (m_tex_store.getSize() - 2)) + 2);
+
+    /* swap the model with random index for the last unindexed one */
+    CBaseModel *tmp = m_models[i];
+    m_models[i] = m_models[index];
+    m_models[index] = tmp;
+  }
+
+  return;
 }
 
 
@@ -164,8 +131,6 @@ void CScene::clear(void)
   m_tex_store.clear();
   m_cover_tex_ind = CTextureStore::INVALID_INDEX;
   m_background_tex_ind = CTextureStore::INVALID_INDEX;
-  //m_name.clear();
-  //m_desc.clear();
   m_error = ERR_OK;
 
   return;
@@ -213,14 +178,9 @@ bool CScene::loadFromXML(const QString & filename)
   /* compute scene's bounding box and set model id's */
   CModelIter it = m_models.begin();
   CModelIter it_end = m_models.end();
-  GLint id = 2;
+  GLint id = 1;
 
-  /* do one iteration outside of a loop - this assumes that
-    there is at least one model with valid bounding box in the scene */
-  m_bbox = (*it)->getBBox();
-  (*it)->setID(id);
-  ++id;
-  ++it;
+  m_bbox.reset();
 
   while (it != it_end)
   {
@@ -229,15 +189,6 @@ bool CScene::loadFromXML(const QString & filename)
     ++id;
     ++it;
   }
-#if 0
-  GLint id = 1;
-  for (CModelIter it = m_models.begin(); it != m_models.end(); ++it)
-  {
-    m_bbox.adjust((*it)->getBBox());
-    (*it)->setID(id);
-    id++;
-  }
-#endif
 
   /* initialize models with random textures */
   shuffleTextures();
@@ -564,42 +515,6 @@ bool CScene::saveToXML(const QString & filename)
 
 /**
  */
-void CScene::shuffleTextures(void)
-{
-  PEXESO_ASSERT(m_models.size() == ((m_tex_store.getSize() - 2) * 2));
-
-  CModelIter mod_it = m_models.begin();
-  QVector<int> m_untextured;
-  for (int i=0; i<m_models.size(); i++) {
-    m_untextured.push_back(i);
-  }
-  int m_ut_remaining = m_models.size();
-  int temp_rand;
-  
-  for (int i = 2; i < m_tex_store.getSize(); ++i)
-  {
-    //qDebug() << "i == " << i;
-    for (int j=0; j<2; j++) {
-      temp_rand = rand() % (m_ut_remaining--);
-      m_models[m_untextured[temp_rand]]->setTextureIndex(i);
-      m_untextured.erase(m_untextured.begin() + temp_rand);
-    }
-
-    
-    
-//     (*mod_it)->setTextureIndex(i);
-//     ++mod_it;
-// 
-//     (*mod_it)->setTextureIndex(i);
-//     ++mod_it;
-  }
-
-  return;
-}
-
-
-/**
- */
 CScene::EErrorCode CScene::loadSceneList(const QString & path, QVector<SSceneInfo> *list, bool simplify)
 {
   PEXESO_ASSERT(list != NULL);
@@ -836,9 +751,7 @@ const char *CScene::errorToString(EErrorCode err)
  */
 QDebug operator<<(QDebug debug, const CScene & scene)
 {
-  debug.nospace() //<< "scene name    : " << scene.m_name                << "\n"
-                  //<< "description   : " << scene.m_desc                << "\n"
-                  << "bounding box  : " << scene.m_bbox                << "\n"
+  debug.nospace() << "bounding box  : " << scene.m_bbox                << "\n"
                   << "cover tex ind : " << scene.m_cover_tex_ind       << "\n"
                   << "cover tex ind : " << scene.m_background_tex_ind  << "\n"
                   << "textures num  : " << scene.m_tex_store.getSize() << "\n"
@@ -851,5 +764,5 @@ QDebug operator<<(QDebug debug, const CScene & scene)
     debug.nospace() << **it << "\n";
   }
 
-  return debug.space();
+  return debug.maybeSpace();
 }

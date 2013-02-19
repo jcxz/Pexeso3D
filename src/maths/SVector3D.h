@@ -96,11 +96,6 @@ struct SVector3D
     return (x * rhs.x + y * rhs.y + z * rhs.z);
   }
 
-  const float & operator[](int i) const
-  {
-    return *((float *) (&x + i));
-  }
-
   /**
    * This member function will multiply vector with constant
    * and assing thre result to it

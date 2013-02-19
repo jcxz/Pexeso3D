@@ -65,6 +65,30 @@ class CBBox
     }
 
     /**
+     * This method will return the width of the bounding box
+     */
+    float getWidth(void) const
+    {
+      return m_max.x - m_min.x;
+    }
+
+    /**
+     * This method will return the height of the bounding box
+     */
+    float getHeight(void) const
+    {
+      return m_max.y - m_min.y;
+    }
+
+    /**
+     * This method will return the depth of the bounding box
+     */
+    float getDepth(void) const
+    {
+      return m_max.z - m_min.z;
+    }
+
+    /**
      * This method will compute the center of bounding box
      *
      * @return a positon in the center of nounding box
@@ -75,16 +99,6 @@ class CBBox
                               (m_max.y + m_min.y) / 2.0f,
                               (m_max.z + m_min.z) / 2.0f);
     }
-
-    /**
-     * Tato funkcia bude konvertovat axis-aligned bounding box
-     * na oriented bounding box, tak ze najprv urci vektory
-     * u, v, w (to budu strany tej bbox) a potom tieto vektory
-     * transformuje touto transformacnou maticou.
-     * Tuna sa bude predavat transformacna matica (cize world matrix),
-     * cize ta kde budu nazhromazdene vsetky transformacie a rotacie sveta
-     */
-    //COBBox toOBBox(const SMatrix4D & transform);
 
     /**
      * This method will reset the bounding box to zero dimensions
@@ -105,20 +119,6 @@ class CBBox
      * @param pt a point to be included
      */
     void adjust(const Maths::SVector3D & pt);
-
-    /**
-     * Compute the intersection of ray with this bounding box
-     *
-     * @param origin origin of the ray
-     * @param dir direction of the ray
-     *
-     * @return true if the ray intersects with this bounding box,
-     *         false otherwise
-     */
-    bool intersects(const Maths::SVector3D & origin,
-                    const Maths::SVector3D & dir,
-                    float *tmin,
-                    float *tmax) const;
 
     /**
      * A function to output bounding box information to QDebug stream

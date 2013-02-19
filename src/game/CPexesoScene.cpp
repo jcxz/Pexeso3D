@@ -87,18 +87,14 @@ CPexesoScene::CPexesoScene(QObject *parent)
   QLabel *p1_score = new QLabel(tr("Player\n0"));
   p1_score->setAlignment(Qt::AlignCenter);
   p1_score->setObjectName("ingame_p1_score_lbl");
-  //p1_score->setFixedSize(100, 100);
-  //p1_score->setAutoFillBackground(false);
 
   QLabel *p2_score = new QLabel(tr("CPU\n0"));
   p2_score->setAlignment(Qt::AlignCenter);
   p2_score->setObjectName("ingame_p2_score_lbl");
-  //p2_score->setFixedSize(100, 100);
 
   /* add gui widgets to the scene */
   m_pb_menu = addWidget(pb_menu);
   m_menu = addWidget(menu);
-  //m_menu->setZValue(1e30);
   m_game_over = addWidget(game_over);
   m_p1_score = addWidget(p1_score);
   m_p2_score = addWidget(p2_score);
@@ -259,11 +255,11 @@ void CPexesoScene::findOptimalDistanceFromCamera(int w, int h)
   /* TODO: fix this method */
 
   /* the code in this method is supposed to
-    place the scene in optimal distance from the camera
-    before it is shown the first time.
-    The reason why this is not done in newGame method
-    is that Qt will not return correct widget geometry
-    until the widget is shown */
+     place the scene in optimal distance from the camera
+     before it is shown the first time.
+     The reason why this is not done in newGame method
+     is that Qt will not return correct widget geometry
+     until the widget is shown */
 
   qDebug() << PEXESO_FUNC;
 
@@ -277,19 +273,17 @@ void CPexesoScene::findOptimalDistanceFromCamera(int w, int h)
 
   /* find out an optimal initial distance for the scene */
   const CBBox & scene_bbox = m_scene.getBBox();
-  //float scene_depth = scene_bbox.getMax().z - scene_bbox.getMin().z;
-  float scene_height = scene_bbox.getMax().y - scene_bbox.getMin().y;
-  float scene_width = scene_bbox.getMax().x - scene_bbox.getMin().x;
+  float scene_height = scene_bbox.getHeight();
+  float scene_width = scene_bbox.getWidth();
 
   qDebug() << "scene_height: " << scene_height
-          << "scene_width: " << (scene_bbox.getMax().x - scene_bbox.getMin().x)
-          << ", height(): " << height()
-          << ", width(): " << height()
-          << ", height() / scene_height" << height() / scene_height;
+           << "scene_width: " << scene_width
+           << ", height(): " << height()
+           << ", width(): " << height()
+           << ", height() / scene_height" << (height() / scene_height);
 
-  const Maths::SVector3D scene_c = m_scene.getBBox().getCenter();
+  const Maths::SVector3D scene_c = scene_bbox.getCenter();
 
-  //m_transl_z =  (height() / (scene_height)) * - 2 * scene_c.z;
   if ((scene_width == 0) || (scene_height == 0))
   {
     m_transl_z = 0;
@@ -302,18 +296,16 @@ void CPexesoScene::findOptimalDistanceFromCamera(int w, int h)
   {
     m_transl_z =  (h / (scene_height)) * -(fabs(scene_bbox.getMax().y) + fabs(scene_bbox.getMin().y));
   }
-  //m_transl_z =  (height() / (scene_height)) * -(fabs(scene_bbox.getMax().y) + fabs(scene_bbox.getMin().y));
-  //m_transl_z = -(fabs(scene_bbox.getMax().y) + fabs(scene_bbox.getMin().y));
 
   qDebug() << "transl_z: "
           << m_transl_z
           << ","
-          << (height() / (scene_height))
+          << (height() / scene_height)
           << ","
           << (fabs(scene_bbox.getMax().y) + fabs(scene_bbox.getMin().y))
           << ","
           << 2 * scene_c.z
-          << ", geomtery: "
+          << ", geometry: "
           << w
           << "x"
           << h;
@@ -326,8 +318,6 @@ void CPexesoScene::findOptimalDistanceFromCamera(int w, int h)
  */
 void CPexesoScene::keyPressEvent(QKeyEvent *event)
 {
-  //qDebug() << PEXESO_FUNC;
-
   /* check on proper initialization */
   if (m_error != ERR_OK)
   {
@@ -367,23 +357,8 @@ void CPexesoScene::keyPressEvent(QKeyEvent *event)
       m_show_stencil ^= true;  // toggle stencil buffer display
       break;
 
-    case Qt::Key_Escape:
-      // TODO: probably fix this
-#if 0
-      qDebug() << "escape";
-      if (!m_game_over->isVisible())
-      {
-        m_game_over->setVisible(true);
-      }
-      else
-      {
-        m_game_over->setVisible(false);
-      }
-#endif
-      break;
-
     default:
-      /* all other event are left to qt */
+      /* all other events are left to qt */
       QGraphicsScene::keyPressEvent(event);
       return;
   }
@@ -398,13 +373,10 @@ void CPexesoScene::keyPressEvent(QKeyEvent *event)
  */
 void CPexesoScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-  //qDebug() << PEXESO_FUNC;
-
   /* let first the qgraphicsscene handle the event */
   QGraphicsScene::mousePressEvent(event);
   if (event->isAccepted())
   {
-    //qDebug() << "Event accepted by QGraphicsScene";
     return;
   }
 
@@ -428,16 +400,13 @@ void CPexesoScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     return;
   }
 
-  //if (event->button() == Qt::RightButton)
+  /* process the event */
   if (event->button() == Qt::LeftButton)
   {
     m_track_ball.push(pixelPosToViewPos(event->scenePos()));
     event->accept();
   }
-
-  /* select the model that was clicked */
-  //if (event->button() == Qt::LeftButton)
-  if (event->button() == Qt::RightButton)
+  else if (event->button() == Qt::RightButton)
   {
     /* deselect the last selection */
     if (m_last_sel_mod)
@@ -451,7 +420,7 @@ void CPexesoScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
       CBaseModel *model = m_scene.calcIntersection(event->scenePos().x(), event->scenePos().y());
       if (model != NULL)
       {
-        qDebug() << "model == " << model;
+        qDebug() << "model == " << *model;
         model->setSelected();
         m_tm->setModel(model);   // send the selected model to TurnManager
         m_last_sel_mod = model;
@@ -474,13 +443,10 @@ void CPexesoScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
  */
 void CPexesoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-  //qDebug() << PEXESO_FUNC;
-
   /* let first the QGraphicsScene handle the event */
   QGraphicsScene::mouseMoveEvent(event);
   if (event->isAccepted())
   {
-    //qDebug() << "Event accepted by QGraphicsScene";
     return;
   }
 
@@ -504,7 +470,7 @@ void CPexesoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     return;
   }
 
-  //if (event->buttons() & Qt::RightButton)
+  /* process the event */
   if (event->buttons() & Qt::LeftButton)
   {
     m_track_ball.move(pixelPosToViewPos(event->scenePos()), QQuaternion());
@@ -519,13 +485,10 @@ void CPexesoScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
  */
 void CPexesoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
 {
-  //qDebug() << PEXESO_FUNC;
-
-  /* let firs the QGraphicsScene handle the event */
+  /* let QGraphicsScene handle the event as first */
   QGraphicsScene::wheelEvent(event);
   if (event->isAccepted())
   {
-    //qDebug() << "Event accepted by QGraphicsScene";
     return;
   }
 
@@ -549,6 +512,7 @@ void CPexesoScene::wheelEvent(QGraphicsSceneWheelEvent *event)
     return;
   }
 
+  /* handle the event */
   m_transl_z += event->delta();
   qDebug() << "delta: " << event->delta() << " m_transl_z == " << m_transl_z;
 
@@ -573,7 +537,6 @@ void CPexesoScene::drawBackground(QPainter *painter, const QRectF & rect)
   }
 
   /* render game */
-  //m_renderer.prepare();
   m_renderer.renderBackground(m_scene);
 
 #ifdef PEXESO_PROJ_ORTHO
@@ -590,7 +553,6 @@ void CPexesoScene::drawBackground(QPainter *painter, const QRectF & rect)
   /* if the computer AI is on turn render the scene as a series of wireframes */
   if (m_tm->isP1Active())
   {
-    //p2_score->setText(tr("CPU\n%1").arg(m_tm->getP2Score()));
     p1_score->setEnabled(true);
     p1_score->setText(tr("Player\n%1").arg(m_tm->getP1Score()));
     p2_score->setEnabled(false);
@@ -598,7 +560,6 @@ void CPexesoScene::drawBackground(QPainter *painter, const QRectF & rect)
   else
   {
     m_renderer.setMode(CRenderer::RM_WIRED);
-    //p1_score->setText(tr("Human\n%1").arg(m_tm->getP1Score()));
     p1_score->setEnabled(false);
     p2_score->setEnabled(true);
     p2_score->setText(tr("CPU\n%1").arg(m_tm->getP2Score()));
@@ -662,7 +623,7 @@ void CPexesoScene::timerEvent(QTimerEvent *event)
   /* check on proper initialization */
   if (m_error != ERR_OK)
   {
-    event->ignore();   // ???
+    event->ignore();
     qDebug() << PEXESO_FUNC
              << "Not continuing because of the following error: "
              << errorToString(m_error);
@@ -679,16 +640,11 @@ void CPexesoScene::timerEvent(QTimerEvent *event)
     return;
   }
 
-  //qDebug() << "Frame " << m_framecount;
-
   /* send the time event to turnmanager */
   if (m_tm->event(m_framecount))
   {
-    // game over
     qDebug() << "Game has ended.";
     stopGame();
-    //update;
-    //return;
   }
 
   /* draw the next frame */

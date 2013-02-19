@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
   }
 
   /* use sample buffers to get antialiasing ??? */
-  //QGLWidget *glwidget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
-  QGLWidget *glwidget = new QGLWidget();
+  QGLWidget *glwidget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
+  //QGLWidget *glwidget = new QGLWidget();
   //QGLWidget *glwidget = new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::NoStencilBuffer));
 
   glwidget->makeCurrent();
@@ -113,8 +113,6 @@ int main(int argc, char *argv[])
 
     QString style(file.readAll());
     qApp->setStyleSheet(style);     // qApp is the same as QApplication::instance()
-
-    //file.close();  // to release the OS lock on style file
   }
 
 #ifdef PEXESO_NO_MENU

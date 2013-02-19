@@ -41,9 +41,9 @@ class CRenderer
     /** this enumeration defines how the scene will be rendered */
     enum ERenderMode {
       RM_NORMAL = 0,            /// render models covered or uncovred based on their state
-      //RM_COVERED,               /// render allways all models covered
       RM_UNCOVERED,             /// render allways all models uncovered
       RM_COLORED,               /// do not render with texture but use varying colors
+      RM_GREYED,                /// use varying degrees of shade to render the models
       RM_WIRED,                 /// render the models in scene only as wireframes
       RM_NULL                   /// suppress rendering
     };

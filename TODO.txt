@@ -1,0 +1,32 @@
+Long term goals:
+  - implement a network game
+  - rewrite XML loading
+  - rewrite the engine to use only standard libraries and custom math
+    helpers, so that the game backend is indepedent of Qt and potentially
+    usable with other gui frameworks as well.
+  - have the model loaded in GPU only once and let multiple instances
+    of CBaseModel simply link to it.
+  - implement a class to manage game's configuration
+              
+maths.h:
+  - implement SMatrix4D and SQuaternion
+             
+CCreditsLabel.h:
+  - this class is maybe unnecessary. Maybe setting and object name on the
+    credits label object would suffice.
+
+CSceneBrowser.h, CSelectionBox.h:
+  - maybe merge these classes to one, or make CSelectionBox a base class for
+    CSceneBrowser or something like that.
+  
+CScene.h, CScene.cpp:
+  - move the XML loading code into a separate class named for example
+    CFileLoader. The CFileLoader class could then load/save other file types
+    like scene list or score list, too.
+    CScene would only manage models, calculate intersection of mouse with model
+    and shuffle textures of models.
+  - the positions of elements in an XML file are assumed to be fixed - repair this
+    
+CPexesoScene.h, CPexesoScene.cpp:
+  - rewrite findOptimalDistanceFromCamera()
+  - maybe move zooming to trackball

@@ -66,10 +66,8 @@ HEADERS += \
   src/game/CIndexBuffer.h \
   src/game/CVertexBuffer.h \
   src/game/CBBox.h \
-  src/game/COBBox.h \
   src/game/CBaseModel.h \
   src/game/CCubeModel.h \
-  src/game/CCamera.h \
   src/game/CTrackBall.h \
   src/game/CTurnManager.h \
   src/game/CScene.h \
@@ -100,10 +98,8 @@ SOURCES += \
   src/game/CIndexBuffer.cpp \
   src/game/CVertexBuffer.cpp \
   src/game/CBBox.cpp \
-  src/game/COBBox.cpp \
   src/game/CBaseModel.cpp \
   src/game/CCubeModel.cpp \
-  src/game/CCamera.cpp \
   src/game/CTrackBall.cpp \
   src/game/CTurnManager.cpp \
   src/game/CScene.cpp \
